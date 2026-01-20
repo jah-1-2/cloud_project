@@ -1,0 +1,518 @@
+import React, { useState } from 'react';
+import { Users, Package, ShoppingCart, BarChart3, Database, Wifi, Cloud, Lock, AlertTriangle, CheckCircle, TrendingUp, DollarSign, Box } from 'lucide-react';
+
+const CloudBMSSimulation = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [simulationStep, setSimulationStep] = useState(0);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [salesData, setSalesData] = useState([
+    { id: 1, product: 'Product A', quantity: 5, price: 1000, date: '2026-01-14', user: 'Staff 1' },
+    { id: 2, product: 'Product B', quantity: 3, price: 1500, date: '2026-01-14', user: 'Staff 2' }
+  ]);
+  const [inventory, setInventory] = useState([
+    { id: 1, name: 'Product A', stock: 50, price: 1000, sold: 5 },
+    { id: 2, name: 'Product B', stock: 15, price: 1500, sold: 3 },
+    { id: 3, name: 'Product C', stock: 8, price: 2000, sold: 0 }
+  ]);
+
+  const simulationSteps = [
+    { step: 0, title: 'System Ready', desc: 'Cloud infrastructure deployed on AWS' },
+    { step: 1, title: 'Staff Login', desc: 'Staff member authenticates via mobile browser' },
+    { step: 2, title: 'WAN Connection', desc: 'Data transmitted over 4G network to cloud' },
+    { step: 3, title: 'Sale Recorded', desc: 'Transaction processed on cloud server' },
+    { step: 4, title: 'Database Updated', desc: 'Sales & inventory data synchronized' },
+    { step: 5, title: 'Dashboard Refresh', desc: 'Owner sees real-time updates anywhere' }
+  ];
+
+  const runSimulation = () => {
+    setIsSimulating(true);
+    setSimulationStep(0);
+    
+    const interval = setInterval(() => {
+      setSimulationStep(prev => {
+        if (prev >= simulationSteps.length - 1) {
+          clearInterval(interval);
+          setIsSimulating(false);
+          const newSale = {
+            id: salesData.length + 1,
+            product: 'Product C',
+            quantity: 2,
+            price: 2000,
+            date: '2026-01-14',
+            user: 'Staff 1'
+          };
+          setSalesData([...salesData, newSale]);
+          setInventory(inventory.map(item => 
+            item.name === 'Product C' ? {...item, stock: item.stock - 2, sold: item.sold + 2} : item
+          ));
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 1500);
+  };
+
+  const totalSales = salesData.reduce((sum, sale) => sum + (sale.quantity * sale.price), 0);
+  const lowStockItems = inventory.filter(item => item.stock < 10);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Cloud className="w-12 h-12 text-blue-400" />
+            <h1 className="text-4xl font-bold">Cloud Business Management System</h1>
+          </div>
+          <p className="text-blue-200 text-lg">Centralized, Real-Time Business Operations Platform</p>
+        </div>
+
+        <div className="flex flex-wrap gap-2 mb-6 bg-slate-800/50 p-2 rounded-lg">
+          {['overview', 'architecture', 'simulation', 'dashboard', 'implementation'].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === tab 
+                  ? 'bg-blue-600 text-white shadow-lg' 
+                  : 'bg-slate-700/50 text-blue-200 hover:bg-slate-700'
+              }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        <div className="bg-slate-800/50 backdrop-blur rounded-xl p-6 shadow-2xl border border-slate-700">
+          
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold text-blue-400 mb-6">System Scope (MVP)</h2>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-slate-900/50 p-6 rounded-lg border border-blue-500/30">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Users className="w-8 h-8 text-blue-400" />
+                    <h3 className="text-xl font-bold">User Management</h3>
+                  </div>
+                  <ul className="space-y-2 text-blue-100">
+                    <li>✓ Roles: Owner & Staff</li>
+                    <li>✓ Secure login authentication</li>
+                    <li>✓ Role-based access control</li>
+                  </ul>
+                </div>
+
+                <div className="bg-slate-900/50 p-6 rounded-lg border border-green-500/30">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Users className="w-8 h-8 text-green-400" />
+                    <h3 className="text-xl font-bold">Customer Management</h3>
+                  </div>
+                  <ul className="space-y-2 text-green-100">
+                    <li>✓ Customer profiles</li>
+                    <li>✓ Contact details</li>
+                    <li>✓ Purchase history tracking</li>
+                  </ul>
+                </div>
+
+                <div className="bg-slate-900/50 p-6 rounded-lg border border-purple-500/30">
+                  <div className="flex items-center gap-3 mb-4">
+                    <ShoppingCart className="w-8 h-8 text-purple-400" />
+                    <h3 className="text-xl font-bold">Sales Management</h3>
+                  </div>
+                  <ul className="space-y-2 text-purple-100">
+                    <li>✓ Sales entry interface</li>
+                    <li>✓ Automatic calculations</li>
+                    <li>✓ Daily/monthly reports</li>
+                  </ul>
+                </div>
+
+                <div className="bg-slate-900/50 p-6 rounded-lg border border-yellow-500/30">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Package className="w-8 h-8 text-yellow-400" />
+                    <h3 className="text-xl font-bold">Inventory Management</h3>
+                  </div>
+                  <ul className="space-y-2 text-yellow-100">
+                    <li>✓ Product list & stock levels</li>
+                    <li>✓ Low-stock alerts</li>
+                    <li>✓ Real-time updates</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 p-6 rounded-lg border border-blue-400">
+                <div className="flex items-center gap-3 mb-4">
+                  <BarChart3 className="w-8 h-8 text-blue-300" />
+                  <h3 className="text-xl font-bold">Reporting Dashboard</h3>
+                </div>
+                <ul className="space-y-2 text-blue-100">
+                  <li>✓ Total sales analytics</li>
+                  <li>✓ Best-selling products</li>
+                  <li>✓ Stock status overview</li>
+                  <li>✓ Real-time business insights</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'architecture' && (
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold text-blue-400 mb-6">Technical Architecture</h2>
+              
+              <div className="space-y-6">
+                <div className="bg-gradient-to-r from-blue-900/50 to-cyan-900/50 p-6 rounded-lg border border-cyan-400">
+                  <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                    <span className="bg-cyan-500 text-white px-3 py-1 rounded">A</span>
+                    Frontend Layer
+                  </h3>
+                  <div className="space-y-3 text-cyan-100">
+                    <p><strong>Type:</strong> Web-based application (mobile-responsive)</p>
+                    <p><strong>Access:</strong> Browser-based (phone, tablet, PC)</p>
+                    <p><strong>Installation:</strong> None required</p>
+                    <p><strong>Reason:</strong> Low-end device support + maximum simplicity</p>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-green-900/50 to-emerald-900/50 p-6 rounded-lg border border-emerald-400">
+                  <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                    <span className="bg-emerald-500 text-white px-3 py-1 rounded">B</span>
+                    WAN Connectivity
+                  </h3>
+                  <div className="space-y-3 text-emerald-100">
+                    <p><strong>Internet via:</strong></p>
+                    <ul className="ml-6 space-y-1">
+                      <li>• 4G/5G mobile data (primary)</li>
+                      <li>• Fiber optic (where available)</li>
+                      <li>• Starlink (backup/rural areas)</li>
+                    </ul>
+                    <p><strong>Role:</strong> Real-time connection of all business locations to centralized cloud</p>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 p-6 rounded-lg border border-purple-400">
+                  <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                    <span className="bg-purple-500 text-white px-3 py-1 rounded">C</span>
+                    Cloud Backend (AWS)
+                  </h3>
+                  <div className="space-y-3 text-purple-100">
+                    <p><strong>Cloud Provider:</strong> AWS (Amazon Web Services)</p>
+                    <p><strong>Services:</strong></p>
+                    <div className="grid md:grid-cols-2 gap-3 mt-3">
+                      <div className="bg-slate-900/50 p-3 rounded">
+                        <Database className="w-6 h-6 mb-2 text-purple-300" />
+                        <strong>EC2:</strong> Application server
+                      </div>
+                      <div className="bg-slate-900/50 p-3 rounded">
+                        <Database className="w-6 h-6 mb-2 text-purple-300" />
+                        <strong>RDS:</strong> Database storage
+                      </div>
+                      <div className="bg-slate-900/50 p-3 rounded">
+                        <Cloud className="w-6 h-6 mb-2 text-purple-300" />
+                        <strong>S3:</strong> Document storage
+                      </div>
+                      <div className="bg-slate-900/50 p-3 rounded">
+                        <Lock className="w-6 h-6 mb-2 text-purple-300" />
+                        <strong>IAM:</strong> Access control
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 p-6 rounded-lg border border-blue-400">
+                  <h3 className="text-2xl font-bold mb-4 text-blue-300">Data Model (Database Schema)</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="bg-slate-800 p-4 rounded border border-slate-600">
+                      <strong className="text-blue-300">Users</strong>
+                      <p className="text-sm text-slate-300 mt-2">id, name, role, business_id</p>
+                    </div>
+                    <div className="bg-slate-800 p-4 rounded border border-slate-600">
+                      <strong className="text-green-300">Businesses</strong>
+                      <p className="text-sm text-slate-300 mt-2">id, name, location</p>
+                    </div>
+                    <div className="bg-slate-800 p-4 rounded border border-slate-600">
+                      <strong className="text-purple-300">Customers</strong>
+                      <p className="text-sm text-slate-300 mt-2">id, name, phone, business_id</p>
+                    </div>
+                    <div className="bg-slate-800 p-4 rounded border border-slate-600">
+                      <strong className="text-yellow-300">Products</strong>
+                      <p className="text-sm text-slate-300 mt-2">id, name, price, stock</p>
+                    </div>
+                    <div className="bg-slate-800 p-4 rounded border border-slate-600 md:col-span-2">
+                      <strong className="text-pink-300">Sales</strong>
+                      <p className="text-sm text-slate-300 mt-2">id, product_id, quantity, date, user_id</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'simulation' && (
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold text-blue-400 mb-6">Data Flow Simulation</h2>
+              
+              <div className="text-center mb-8">
+                <button
+                  onClick={runSimulation}
+                  disabled={isSimulating}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 px-8 py-4 rounded-lg font-bold text-lg shadow-lg transition-all"
+                >
+                  {isSimulating ? 'Simulation Running...' : 'Start Simulation'}
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {simulationSteps.map((step, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-6 rounded-lg border-2 transition-all duration-500 ${
+                      simulationStep >= idx
+                        ? 'bg-gradient-to-r from-green-900/50 to-emerald-900/50 border-green-400 shadow-lg shadow-green-500/20'
+                        : 'bg-slate-900/30 border-slate-600'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl ${
+                        simulationStep >= idx ? 'bg-green-500' : 'bg-slate-700'
+                      }`}>
+                        {simulationStep >= idx ? <CheckCircle className="w-6 h-6" /> : idx + 1}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold">{step.title}</h3>
+                        <p className="text-slate-300">{step.desc}</p>
+                      </div>
+                      {simulationStep === idx && isSimulating && (
+                        <div className="animate-pulse">
+                          <Wifi className="w-8 h-8 text-blue-400" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-slate-900/50 p-6 rounded-lg border border-blue-400 mt-8">
+                <h3 className="text-xl font-bold mb-4 text-blue-300">Complete Data Flow</h3>
+                <div className="flex items-center justify-center gap-3 flex-wrap text-center">
+                  <div className="bg-blue-600 px-4 py-2 rounded">User</div>
+                  <span className="text-2xl">→</span>
+                  <div className="bg-green-600 px-4 py-2 rounded">WAN</div>
+                  <span className="text-2xl">→</span>
+                  <div className="bg-purple-600 px-4 py-2 rounded">Cloud App</div>
+                  <span className="text-2xl">→</span>
+                  <div className="bg-pink-600 px-4 py-2 rounded">Database</div>
+                  <span className="text-2xl">→</span>
+                  <div className="bg-yellow-600 px-4 py-2 rounded">Dashboard</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'dashboard' && (
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold text-blue-400 mb-6">Live Business Dashboard</h2>
+              
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="bg-gradient-to-br from-green-600 to-emerald-600 p-6 rounded-lg shadow-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <DollarSign className="w-8 h-8" />
+                    <TrendingUp className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-sm font-semibold opacity-90">Total Sales Today</h3>
+                  <p className="text-3xl font-bold mt-2">${totalSales.toLocaleString()}</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-600 to-cyan-600 p-6 rounded-lg shadow-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <ShoppingCart className="w-8 h-8" />
+                    <CheckCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-sm font-semibold opacity-90">Transactions</h3>
+                  <p className="text-3xl font-bold mt-2">{salesData.length}</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-yellow-600 to-orange-600 p-6 rounded-lg shadow-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <AlertTriangle className="w-8 h-8" />
+                    <Box className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-sm font-semibold opacity-90">Low Stock Items</h3>
+                  <p className="text-3xl font-bold mt-2">{lowStockItems.length}</p>
+                </div>
+              </div>
+
+              <div className="bg-slate-900/50 p-6 rounded-lg border border-blue-400">
+                <h3 className="text-xl font-bold mb-4 text-blue-300">Recent Sales</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-slate-600">
+                        <th className="text-left p-3">Product</th>
+                        <th className="text-left p-3">Quantity</th>
+                        <th className="text-left p-3">Price</th>
+                        <th className="text-left p-3">Total</th>
+                        <th className="text-left p-3">Staff</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {salesData.map(sale => (
+                        <tr key={sale.id} className="border-b border-slate-700 hover:bg-slate-800/50">
+                          <td className="p-3">{sale.product}</td>
+                          <td className="p-3">{sale.quantity}</td>
+                          <td className="p-3">${sale.price}</td>
+                          <td className="p-3 font-bold text-green-400">${sale.quantity * sale.price}</td>
+                          <td className="p-3">{sale.user}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="bg-slate-900/50 p-6 rounded-lg border border-yellow-400">
+                <h3 className="text-xl font-bold mb-4 text-yellow-300">Inventory Status</h3>
+                <div className="space-y-3">
+                  {inventory.map(item => (
+                    <div key={item.id} className="bg-slate-800 p-4 rounded-lg flex items-center justify-between">
+                      <div className="flex-1">
+                        <h4 className="font-bold">{item.name}</h4>
+                        <p className="text-sm text-slate-400">Price: ${item.price} | Sold: {item.sold}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className={`text-2xl font-bold ${item.stock < 10 ? 'text-red-400' : 'text-green-400'}`}>
+                          {item.stock}
+                        </p>
+                        <p className="text-xs text-slate-400">in stock</p>
+                        {item.stock < 10 && (
+                          <span className="text-xs text-red-400 flex items-center gap-1 mt-1">
+                            <AlertTriangle className="w-3 h-3" /> Low Stock
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'implementation' && (
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold text-blue-400 mb-6">Implementation Plan</h2>
+              
+              <div className="space-y-6">
+                <div className="bg-gradient-to-r from-blue-900/50 to-cyan-900/50 p-6 rounded-lg border border-cyan-400">
+                  <h3 className="text-2xl font-bold mb-4">Phase 1: Infrastructure Setup</h3>
+                  <ul className="space-y-2 text-cyan-100">
+                    <li>✓ Select AWS as cloud provider</li>
+                    <li>✓ Deploy EC2 instances for application server</li>
+                    <li>✓ Configure RDS database</li>
+                    <li>✓ Set up S3 storage buckets</li>
+                    <li>✓ Implement IAM security policies</li>
+                    <li>✓ Configure automated backups</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 p-6 rounded-lg border border-purple-400">
+                  <h3 className="text-2xl font-bold mb-4">Phase 2: Application Development</h3>
+                  <ul className="space-y-2 text-purple-100">
+                    <li>✓ Develop responsive web interface</li>
+                    <li>✓ Implement user authentication system</li>
+                    <li>✓ Build core modules (Sales, Inventory, Customers)</li>
+                    <li>✓ Create reporting dashboard</li>
+                    <li>✓ Connect frontend to cloud backend</li>
+                    <li>✓ Implement real-time data synchronization</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-r from-green-900/50 to-emerald-900/50 p-6 rounded-lg border border-emerald-400">
+                  <h3 className="text-2xl font-bold mb-4">Phase 3: Deployment</h3>
+                  <ul className="space-y-2 text-emerald-100">
+                    <li>✓ Connect business locations via Internet</li>
+                    <li>✓ Create user accounts (Owner & Staff roles)</li>
+                    <li>✓ Migrate data from paper/spreadsheets</li>
+                    <li>✓ Configure mobile data/Starlink connections</li>
+                    <li>✓ Test end-to-end functionality</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-r from-yellow-900/50 to-orange-900/50 p-6 rounded-lg border border-yellow-400">
+                  <h3 className="text-2xl font-bold mb-4">Phase 4: Training & Go-Live</h3>
+                  <ul className="space-y-2 text-yellow-100">
+                    <li>✓ Conduct 1-2 hour basic training</li>
+                    <li>✓ Focus on sales entry & inventory management</li>
+                    <li>✓ Provide quick reference guides</li>
+                    <li>✓ Monitor initial usage</li>
+                    <li>✓ Provide ongoing support</li>
+                  </ul>
+                </div>
+
+                <div className="bg-red-900/50 p-6 rounded-lg border-2 border-red-400">
+                  <h3 className="text-2xl font-bold mb-4 text-red-300">What MUST Stop Immediately</h3>
+                  <ul className="space-y-2 text-red-100">
+                    <li>✗ Paper notebooks for record keeping</li>
+                    <li>✗ Sales tracking on personal phones</li>
+                    <li>✗ No backup systems</li>
+                    <li>✗ Manual inventory estimation</li>
+                    <li>✗ Disconnected business locations</li>
+                  </ul>
+                </div>
+
+                <div className="bg-slate-900/50 p-6 rounded-lg border border-blue-400">
+                  <h3 className="text-2xl font-bold mb-4 text-blue-300">Security & Reliability</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="font-bold text-green-300 mb-2">Security Measures</h4>
+                      <ul className="space-y-1 text-sm">
+                        <li>• Password-based authentication</li>
+                        <li>• Role-based access control</li>
+                        <li>• Encrypted cloud storage</li>
+                        <li>• HTTPS/SSL encryption</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-yellow-300 mb-2">Reliability</h4>
+                      <ul className="space-y-1 text-sm">
+                        <li>• Automatic daily backups</li>
+                        <li>• 99.9% uptime SLA</li>
+                        <li>• Multi-connectivity options</li>
+                        <li>• Disaster recovery plan</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 p-6 rounded-lg border border-orange-400">
+                  <h3 className="text-2xl font-bold mb-4 text-orange-300">Risk Management</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="w-5 h-5 text-orange-400 mt-1" />
+                      <div>
+                        <strong>Risk:</strong> Internet connectivity failure<br/>
+                        <strong className="text-green-400">Control:</strong> Fallback to mobile data or Starlink backup
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="w-5 h-5 text-orange-400 mt-1" />
+                      <div>
+                        <strong>Risk:</strong> User resistance to new system<br/>
+                        <strong className="text-green-400">Control:</strong> Minimal UI design + hands-on training
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="w-5 h-5 text-orange-400 mt-1" />
+                      <div>
+                        <strong>Risk:</strong> Data misuse or unauthorized access<br/>
+                        <strong className="text-green-400">Control:</strong> Role-based permissions + audit logs
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CloudBMSSimulation;
